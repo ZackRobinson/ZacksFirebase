@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ZacksFirebase</string>
+    <string name="facebook_app_id">1307298389376128</string>
+    <string name="fb_login_protocol_scheme">fb1307298389376128</string>
 </resources>

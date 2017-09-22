@@ -38,5 +38,10 @@
         android:onClick="usingFirebase"
         android:text="Sign Up" />
 
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:onClick="usingFirebase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
