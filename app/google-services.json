@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "107682643677",
+    "firebase_url": "https://zacksfirebase.firebaseio.com",
+    "project_id": "zacksfirebase",
+    "storage_bucket": "zacksfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107682643677:android:458e0ab1aa738c4d",
+        "android_client_info": {
+          "package_name": "com.zackeryrobinson.zacksfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "107682643677-sdaqmhu26od6ql244j12s6u470pshanh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zackeryrobinson.zacksfirebase",
+            "certificate_hash": "d205b37346e8077a64ed189b52d6894bbbbe7b43"
+          }
+        },
+        {
+          "client_id": "107682643677-120loirnjrrlarfrvdov54rom28h96da.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzbnTeeB0Bf6Qwj0mvQYEanxX10S1JVaM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "107682643677-120loirnjrrlarfrvdov54rom28h96da.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
