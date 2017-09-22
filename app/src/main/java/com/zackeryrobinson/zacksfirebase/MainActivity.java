@@ -14,9 +14,16 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityTag";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
-
+    CallbackManager callbackManager;
+    private AccessTokenTracker mFacebookAccessTokenTracker;
     private EditText etEmail;
     private EditText etPassword;
     private LoginButton loginButton;
@@ -43,19 +50,76 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener(){
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        callbackManager = CallbackManager.Factory.create();
+        AppEventsLogger.activateApp(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "signInWithFacebook:onComplete:" + loginResult);
+
+                // If sign in fails, display a message to the user. If sign in succeeds
+                // the auth state listener will be notified and logic to handle the
+                // signed in user can be handled in the listener.
+                Toast.makeText(MainActivity.this, "Signed in", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d(TAG, "signInWithFacebook:onComplete:" + loginResult);
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        Toast.makeText(MainActivity.this, "Signed in", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                        startActivity(intent);
+                        // ...
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user!=null){
+                if (user != null) {
                     //User is signed in
                     Log.d(TAG, "onAuthStateChanged: signed_in" + user.getUid());
-                    Intent intent = new Intent(MainActivity.this,MovieActivity.class);
+                    Intent intent = new Intent(MainActivity.this, MovieActivity.class);
                     startActivity(intent);
                 } else {
                     //User is signed out
@@ -66,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
+
+        // Prints the Key Hash for Facebook API
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.zackeryrobinson.zacksfirebase",
@@ -87,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(mAuthListener != null){
+        if (mAuthListener != null) {
 
             mAuth.removeAuthStateListener(mAuthListener);
         }
@@ -98,8 +164,10 @@ public class MainActivity extends AppCompatActivity {
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
 
-        switch (view.getId()){
+        switch (view.getId()) {
+
             case R.id.btnSignIn:
+
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -111,19 +179,21 @@ public class MainActivity extends AppCompatActivity {
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
                                     Log.w(TAG, "signInWithEmail:failed", task.getException());
-                                    Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.makeText(MainActivity.this, "Failed",
                                             Toast.LENGTH_SHORT).show();
                                 } else
-                                    Toast.makeText(MainActivity.this, "Signed in", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MainActivity.this, "Signed in", Toast.LENGTH_SHORT).show();
 
                                 Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                                 startActivity(intent);
                                 // ...
                             }
                         });
+
                 break;
 
             case R.id.btnSignUp:
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -134,16 +204,17 @@ public class MainActivity extends AppCompatActivity {
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(MainActivity.this, "Failed",
+                                    Toast.makeText(MainActivity.this, "Failed to sign up",
                                             Toast.LENGTH_SHORT).show();
                                 } else
                                     Toast.makeText(MainActivity.this, "User Created",
-                                            Toast.LENGTH_LONG).show();
+                                            Toast.LENGTH_SHORT).show();
 
+                                // ...
                             }
                         });
-                break;
 
+                break;
         }
 
 
